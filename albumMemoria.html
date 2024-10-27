@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Álbum de Memórias</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #FFA500; /* Laranja de fundo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: -30px; /* Ajuste para a posição mais à esquerda */
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #461277; /* Cor do botão */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #FF4500; /* Tom mais escuro ao passar o mouse */
+        }
+        
+        .back-button::before {
+            content: '←'; /* Seta para esquerda */
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .book {
+            display: flex;
+            width: 800px;
+            height: 500px;
+            background-color: #FFD29E; /* Cor de livro */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page {
+            width: 50%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px; /* Espaçamento entre os elementos */
+        }
+        
+        .left-page, .right-page {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .element {
+            width: 250px;
+            height: 130px;
+            background-color: white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            color: #333;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pink {
+            border: 5px solid #FFB6C1; /* Rosa */
+        }
+        
+        .purple {
+            border: 5px solid #9370DB; /* Roxo */
+        }
+        
+        .red {
+            border: 5px solid #FF6347; /* Vermelho */
+        }
+        
+        .yellow {
+            border: 5px solid #FFD700; /* Amarelo */
+        }
+        
+        .blue {
+            border: 5px solid #4682B4; /* Azul */
+        }
+        
+        .flopt-button {
+            background-color: #FFD700;
+            border-radius: 20px;
+            padding: 10px 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+        
+        .image-box img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .titulo {
+            padding: 10px 8px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button"></a>
+        <h1 class="titulo">Meu álbum de memórias</h1>
+        <div class="book">
+            <div class="page left-page">
+                <div class="element pink">
+                    <p>?</p>
+                </div>
+                <div class="element purple">
+                    <p>?</p>
+                </div>
+                <div class="flopt-button">
+                    <p>FLOPT!</p>
+                </div>
+                <div class="image-box">
+                    <img src="" alt="">
+                </div>
+            </div>
+
+            <div class="page right-page">
+                <div class="element red">
+                    <p>?</p>
+                </div>
+                <div class="element yellow">
+                    <p>?</p>
+                </div>
+                <div class="element blue">
+                    <p>?</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
