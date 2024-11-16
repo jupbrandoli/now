@@ -34,7 +34,7 @@ $sentimento_id = $conexao->real_escape_string($sentimento_id); // Contra SQL Inj
 $query = "SELECT m.id, m.titulo, m.descricao, m.data, m.foto, m.sentimento 
         FROM memoria m 
         LEFT JOIN album a ON m.id = a.id_memoria AND a.id_user = $usuario_id
-        WHERE a.id_memoria IS NULL AND m.sentimento = '$sentimento_id' 
+        WHERE a.favorita IS NULL
         ORDER BY RAND() LIMIT 1;";
 
 // Executa a consulta
@@ -223,6 +223,7 @@ if ($result && $result->num_rows > 0) {
     </body>
     </html>
     <?php
+
 } else {
     // Caso não haja memórias disponíveis
     ?>
@@ -231,13 +232,129 @@ if ($result && $result->num_rows > 0) {
     <head>
         <meta charset="UTF-8">
         <title>Nenhuma Memória Disponível</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body, html { 
+                height: 100%; 
+                width: 100%; 
+                overflow: hidden; 
+                font-family: Arial, sans-serif; 
+                background-color: white; 
+            }
+            .container { 
+                position: relative;  
+                height: 100%; 
+                width: 100%;
+                display: flex;
+                justify-content: center; 
+                align-items: center; 
+            }
+            .box {
+                width: 50%;
+                height: 400px; 
+                background-color: gray; /* Cor cinza */
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                position: relative; 
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+            }
+            .text { 
+                text-align: center; 
+                position: absolute; 
+                top: 10%; 
+                width: 100%; 
+            }
+            .text h1 { 
+                font-size: 24px; 
+                font-weight: bold; 
+            }
+            .text-bottom { 
+                position: absolute; 
+                bottom: 5%; 
+                width: 100%; 
+                text-align: center; 
+            }
+
+            .text-bottom p { 
+                font-size: 18px; 
+                margin-top: 10px; 
+            }
+            .circle { 
+                border-radius: 50%; 
+                position: absolute; 
+                background-color: gray; /* Cor cinza */
+            }
+            .circle-top-left { 
+                width: 150px; 
+                height: 150px;
+                top: 25%; 
+                left: 5%; 
+            }
+            .circle-bottom-left { 
+                width: 160px; height: 160px; 
+                bottom: -5%; 
+                left: -3%; 
+            }
+            .circle-top-right { 
+                width: 160px; 
+                height: 160px; 
+                top: -5%; 
+                right: -3%; 
+            }
+            .circle-bottom-right { 
+                width: 150px; 
+                height: 150px; 
+                bottom: 25%; 
+                right: 5%; 
+            }
+            .back-button { 
+                position: absolute;
+                top: 2%;
+                left: 2%;
+                width: 40px;
+                height: 40px;
+                background-color: white;
+                border: 2px solid gray; /* Cor cinza */
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer; 
+                text-decoration: none; 
+                }
+            
+            .back-button::before {
+                content: "←";
+                font-size: 18px;
+                color: black; }
+        </style>
     </head>
     <body>
-        <p>Nenhuma memória disponível com esse sentimento que você ainda não tenha visto.</p>
+        <div class="container">
+            <a href="index.php" class="back-button"></a>
+
+            <!-- Texto no topo -->
+            <div class="text">
+                <h1>Nenhuma Memória Disponível</h1>
+            </div>
+
+            <!-- Caixa colorida no centro -->
+            <div class="box">
+                <p>Não há memórias com esse sentimento que você ainda não tenha visto.</p>
+            </div>
+
+            <!-- Círculos decorativos -->
+            <div class="circle circle-top-left"></div>
+            <div class="circle circle-bottom-left"></div>
+            <div class="circle circle-top-right"></div>
+            <div class="circle circle-bottom-right"></div>
+        </div>
     </body>
     </html>
     <?php
 }
+
 
 // Fecha a conexão
 $conexao->close();

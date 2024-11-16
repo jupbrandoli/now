@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -140,41 +140,89 @@
         .titulo {
             padding: 10px 8px;
         }
+
+        .page {
+            display: none; /* Todas as páginas começam ocultas */
+        }
+
+        .page.show {
+            display: block; /* Apenas a página ativa será exibida */
+        }
         
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="back-button"></a>
+        <a href="index.php" class="back-button"></a>
         <h1 class="titulo">Meu álbum de memórias</h1>
+        
+        <!-- Barra de navegação para as páginas -->
+        <nav class="navigation">
+            <button onclick="showPage('page1')">Página 1</button>
+            <button onclick="showPage('page2')">Página 2</button>
+        </nav>
+    
+        <!-- Álbum de memórias com páginas -->
         <div class="book">
-            <div class="page left-page">
-                <div class="element pink">
-                    <p>?</p>
+            <div class="page left-page" id="page1">
+                <div class="element yellow" id="m1">
+                    <p>Memória 1</p>
                 </div>
-                <div class="element purple">
-                    <p>?</p>
+                <div class="element purple" id="m2">
+                    <p>Memória 2</p>
                 </div>
-                <div class="flopt-button">
-                    <p>FLOPT!</p>
-                </div>
-                <div class="image-box">
-                    <img src="" alt="">
+                <div class="element purple" id="m3">
+                    <p>Memória 3</p>
                 </div>
             </div>
-
-            <div class="page right-page">
-                <div class="element red">
-                    <p>?</p>
+    
+            <div class="page right-page" id="page1">
+                <div class="element blue" id="m4">
+                    <p>Memória 4</p>
                 </div>
-                <div class="element yellow">
-                    <p>?</p>
+                <div class="element blue" id="m5">
+                    <p>Memória 5</p>
                 </div>
-                <div class="element blue">
-                    <p>?</p>
+                <div class="element red" id="m6">
+                    <p>Memória 6</p>
+                </div>
+            </div>
+            <div class="page left-page" id="page2">
+                <div class="element pink" id="m7">
+                    <p>Memória 7</p>
+                </div>
+                <div class="element yellow" id="m8">
+                    <p>Memória 8</p>
+                </div>
+                <div class="element pink" id="m9">
+                    <p>Memória 9</p>
+                </div>
+            </div>
+    
+            <div class="page right-page" id="page2">
+                <div class="element red" id="m10">
+                    <p>Memória 10</p>
                 </div>
             </div>
         </div>
     </div>
+
+
+    <script>
+        function showPage(pageId) {
+            // Oculta todas as páginas
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('show'));
+        
+            // Exibe a página selecionada
+            const selectedPage = document.querySelectorAll(`#${pageId}`);
+            selectedPage.forEach(page => page.classList.add('show'));
+        }
+        
+        // Exibe a primeira página por padrão
+        window.onload = () => {
+            showPage('page1');
+        };
+    </script>
 </body>
 </html>

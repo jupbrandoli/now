@@ -1,8 +1,8 @@
 <?php
 session_start();
-    if(!isset($_SESSION['ID'])){
-        header("location: login.html");
-    }
+if(!isset($_SESSION['ID'])){
+    header("location: login.html");
+}
 ?>
 
 <!DOCTYPE html>
@@ -39,21 +39,88 @@ session_start();
             left: 0;
             z-index: 1; /* Coloca o canvas atrás do texto */
         }
+        /* Estilos do menu */
+        .menu {
+            position: absolute;
+            top: 10px; /* Posição do menu */
+            left: 10px; /* Posição do menu */
+            width: 50px; /* Diâmetro do círculo */
+            height: 50px; /* Diâmetro do círculo */
+            background-color: #444;
+            border-radius: 50%; /* Torna o menu circular */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            z-index: 3;
+        }
+        .menu:hover {
+            background-color: #555;
+        }
+        .menu-item {
+    display: none;
+    position: absolute;
+    width: 60px; /* Largura reduzida */
+    height: 60px; /* Altura aumentada */
+    background-color: #333;
+    color: white;
+    text-align: center;
+    border-radius: 50%; /* Torna as bordas das opções circulares */
+    transition: background-color 0.3s;
+    display: flex; /* Permite o uso de flexbox */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+}
+
+.menu-item a {
+    color: white; /* Cor do texto do link */
+    text-decoration: none; /* Remove o sublinhado */
+    width: 100%; /* Ocupar toda a largura do item */
+    height: 100%; /* Ocupar toda a altura do item */
+    display: flex; /* Permite o uso de flexbox no link */
+    justify-content: center; /* Centraliza horizontalmente o conteúdo do link */
+    align-items: center; /* Centraliza verticalmente o conteúdo do link */
+}
+        /* Estilo das opções do menu com posição circular */
+        .menu-item:nth-child(1) { top: -60px; left: 0; }  /* Acima */
+        .menu-item:nth-child(2) { top: 0; left: 60px; }   /* Direita */
+        .menu-item:nth-child(3) { top: 60px; left: 0; }   /* Abaixo */
+        .menu-item:nth-child(4) { top: 0; left: -60px; }   /* Esquerda */
     </style>
+    <link rel="stylesheet" href="https://unpkg.com/phosphor-icons@latest/src/styles.css">
 </head>
 <body>
     <h1>NOW!</h1>
     <canvas id="canvas"></canvas>
 
+    <!-- Menu circular -->
+    <div class="menu">
+        <span><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#ffffff" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg></span>
+        <div class="menu-item">
+            <a href="albumMemoria.html">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff" viewBox="0 0 256 256">
+                    <path d="M232,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H24a8,8,0,0,0-8,8V200a8,8,0,0,0,8,8H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h72a8,8,0,0,0,8-8V56A8,8,0,0,0,232,48ZM96,192H32V64H96a24,24,0,0,1,24,24V200A39.81,39.81,0,0,0,96,192Zm128,0H160a39.81,39.81,0,0,0-24,8V88a24,24,0,0,1,24-24h64Z"></path>
+                </svg>
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="albumMemoria.html">✩</a>
+        </div>
+        <div class="menu-item">
+        <a href="albumMemoria.html">🔔</a> <!-- Nova bola adicionada com um ícone de sino -->
+    </div>
+    </div>
+
+
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
-        // Ajusta o tamanho do canvas para cobrir a tela inteira
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        // Definindo as cores e seus IDs emocionais
         const colorData = [
             { color: 'yellow', id: 'felicidade' },
             { color: 'blue', id: 'tristeza' },
@@ -62,10 +129,9 @@ session_start();
             { color: 'red', id: 'raiva' }
         ];
 
-        // Array para armazenar as bolas desenhadas
         let balls = [];
+        let hoveredBall = null;
 
-        // Função para verificar se duas bolas se sobrepõem
         function isOverlapping(ball1, ball2) {
             const dx = ball1.x - ball2.x;
             const dy = ball1.y - ball2.y;
@@ -73,11 +139,10 @@ session_start();
             return distance < ball1.radius + ball2.radius;
         }
 
-        // Função para verificar se a bola está sobrepondo o texto com margem reduzida lateralmente
         function isOverlappingTextArea(ball) {
-            const textTop = canvas.height * 0.4 - 20; // 20px de margem vertical
+            const textTop = canvas.height * 0.4 - 20;
             const textBottom = canvas.height * 0.4 + 20;
-            const textLeft = canvas.width * 0.25;  // Reduz a margem lateral
+            const textLeft = canvas.width * 0.25;
             const textRight = canvas.width * 0.75;
 
             return (
@@ -88,35 +153,36 @@ session_start();
             );
         }
 
-        // Função para desenhar uma bola
-        function drawBall(x, y, radius, color) {
+        function drawBall(x, y, radius, color, highlight = false) {
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.fillStyle = color;
             ctx.fill();
+            if (highlight) {
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = 'white';
+                ctx.stroke();
+            }
             ctx.closePath();
             return { x, y, radius, color };
         }
 
-        // Função para gerar um número aleatório entre um intervalo
         function getRandomNumber(min, max) {
             return Math.random() * (max - min) + min;
         }
 
-        // Função para desenhar várias bolas aleatórias sem sobreposição e fora da área do texto
         function drawRandomBalls(numBallsPerColor) {
             for (let color of colorData) {
                 let count = 0;
                 while (count < numBallsPerColor) {
                     const radius = getRandomNumber(20, 50);
-                    const x = getRandomNumber(-radius, canvas.width + radius); // Permite sair da tela
+                    const x = getRandomNumber(-radius, canvas.width + radius);
                     const y = getRandomNumber(-radius, canvas.height + radius);
 
                     const newBall = { x, y, radius, color: color.color, id: color.id };
                     let overlapping = balls.some(ball => isOverlapping(ball, newBall)) || isOverlappingTextArea(newBall);
 
                     if (!overlapping) {
-                        drawBall(newBall.x, newBall.y, newBall.radius, newBall.color);
                         balls.push(newBall);
                         count++;
                     }
@@ -124,38 +190,26 @@ session_start();
             }
         }
 
-        // Função para detectar se o clique ocorreu dentro de uma bola
         function isBallClicked(ball, clickX, clickY) {
             const distance = Math.sqrt((ball.x - clickX) ** 2 + (ball.y - clickY) ** 2);
             return distance < ball.radius;
         }
 
-        // Função para enviar o ID selecionado para o PHP via link (query string)
-        
         function sendIdToPHP(ballId) {
-            // Cria um elemento de formulário
             var form = document.createElement("form");
             form.method = "POST";
-            form.action = "visualizarMemoria.php"; // Altere para o arquivo PHP apropriado
+            form.action = "visualizarMemoria.php";
 
-            // Cria um elemento de entrada para armazenar o ballId
             var input = document.createElement("input");
             input.type = "hidden";
             input.name = "ballId";
             input.value = ballId;
 
-            // Anexa o input ao formulário
             form.appendChild(input);
-
-            // Anexa o formulário ao corpo (necessário para submissão)
             document.body.appendChild(form);
-
-            // Submete o formulário
             form.submit();
         }
 
- 
-        // Função de clique para detectar a bola e enviar o ID correspondente ao PHP
         canvas.addEventListener('click', function(event) {
             const rect = canvas.getBoundingClientRect();
             const clickX = event.clientX - rect.left;
@@ -168,22 +222,40 @@ session_start();
                 }
             }
         });
-        canvas.addEventListener('click', function(event) {
-    const rect = canvas.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    const clickY = event.clientY - rect.top;
 
-    for (let ball of balls) {
-        if (isBallClicked(ball, clickX, clickY)) {
-            sendIdToPHP(ball.id);
-            break;
+        canvas.addEventListener('mousemove', function(event) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+            let isHovering = false;
+            hoveredBall = null;
+
+            for (let ball of balls) {
+                if (isBallClicked(ball, mouseX, mouseY)) {
+                    hoveredBall = ball;
+                    isHovering = true;
+                    break;
+                }
+            }
+
+            if (isHovering) {
+                canvas.classList.add("pin-cursor");
+            } else {
+                canvas.classList.remove("pin-cursor");
+            }
+
+            redrawBalls();
+        });
+
+        function redrawBalls() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            balls.forEach(ball => {
+                drawBall(ball.x, ball.y, ball.radius, ball.color, ball === hoveredBall);
+            });
         }
-    }
-});
 
-
-        // Desenha 20 bolas de cada cor de forma proporcional sem sobreposição e fora da área do texto
         drawRandomBalls(20);
+        redrawBalls();
     </script>
 </body>
 </html>
