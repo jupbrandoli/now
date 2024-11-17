@@ -38,6 +38,8 @@ if(!isset($_SESSION['ID'])){
             top: 0;
             left: 0;
             z-index: 1; /* Coloca o canvas atrás do texto */
+            cursor: pointer;
+        
         }
         /* Estilos do menu */
         .menu {
@@ -99,18 +101,15 @@ if(!isset($_SESSION['ID'])){
     <div class="menu">
         <span><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#ffffff" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg></span>
         <div class="menu-item">
-            <a href="albumMemoria.html">
+            <a href="albumMemoria.php">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff" viewBox="0 0 256 256">
                     <path d="M232,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H24a8,8,0,0,0-8,8V200a8,8,0,0,0,8,8H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h72a8,8,0,0,0,8-8V56A8,8,0,0,0,232,48ZM96,192H32V64H96a24,24,0,0,1,24,24V200A39.81,39.81,0,0,0,96,192Zm128,0H160a39.81,39.81,0,0,0-24,8V88a24,24,0,0,1,24-24h64Z"></path>
                 </svg>
             </a>
         </div>
         <div class="menu-item">
-            <a href="albumMemoria.html">✩</a>
+            <a href="albumFavoritas.php">✩</a>
         </div>
-        <div class="menu-item">
-        <a href="albumMemoria.html">🔔</a> <!-- Nova bola adicionada com um ícone de sino -->
-    </div>
     </div>
 
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 16/11/2024 às 18:23
+-- Tempo de geração: 17/11/2024 às 15:20
 -- Versão do servidor: 10.4.28-MariaDB
 -- Versão do PHP: 8.2.4
 
@@ -31,7 +31,7 @@ CREATE TABLE `album` (
   `id` int(11) NOT NULL,
   `id_memoria` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
-  `favorita` tinyint(1) NOT NULL
+  `favorita` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -53,7 +53,7 @@ INSERT INTO `album` (`id`, `id_memoria`, `id_user`, `favorita`) VALUES
 (12, 10, 2, 0),
 (13, 3, 2, 0),
 (14, 5, 2, 0),
-(15, 2, 2, 0),
+(15, 2, 2, 1),
 (16, 1, 2, 0),
 (17, 8, 2, 0),
 (18, 6, 2, 0),
@@ -102,7 +102,47 @@ INSERT INTO `album` (`id`, `id_memoria`, `id_user`, `favorita`) VALUES
 (61, 44, 3, 0),
 (62, 47, 3, 0),
 (63, 61, 3, 0),
-(64, 59, 3, 0);
+(64, 59, 3, 0),
+(65, 77, 3, 0),
+(66, 25, 3, 0),
+(67, 63, 3, 0),
+(68, 39, 3, 0),
+(69, 81, 3, 0),
+(70, 64, 3, 0),
+(71, 35, 3, 0),
+(72, 43, 3, 0),
+(73, 66, 3, 0),
+(74, 30, 3, 0),
+(75, 68, 3, 0),
+(76, 38, 3, 0),
+(77, 51, 3, 0),
+(78, 37, 3, 0),
+(79, 67, 3, 0),
+(80, 63, 4, 0),
+(81, 12, 4, 0),
+(82, 1, 4, 1),
+(83, 57, 4, 0),
+(84, 10, 4, 0),
+(85, 78, 4, 0),
+(86, 7, 4, 0),
+(87, 38, 4, 0),
+(88, 59, 4, 0),
+(89, 54, 4, 0),
+(90, 8, 4, 0),
+(91, 5, 4, 0),
+(92, 43, 4, 0),
+(93, 30, 4, 0),
+(94, 31, 4, 0),
+(95, 22, 4, 0),
+(96, 65, 4, 0),
+(97, 50, 4, 0),
+(98, 82, 4, 0),
+(99, 4, 4, 0),
+(100, 28, 4, 1),
+(101, 35, 4, 0),
+(102, 16, 4, 0),
+(103, 32, 4, 0),
+(104, 24, 4, 0);
 
 -- --------------------------------------------------------
 
@@ -205,7 +245,15 @@ INSERT INTO `memoria` (`id`, `titulo`, `descricao`, `sentimento`, `data`, `foto`
 (79, 'Cansados de jogar vôlei', 'Quando ninguém mais tinha vontade de jogar', 'tristeza', '2022-10-13', 'imagens/volei.png'),
 (80, 'Volta no parque da Feliz', 'Andar, andar e andar', 'outofcontext', '2023-10-19', 'imagens/voltinha.png'),
 (81, 'Halloween 2024', 'Poucos aderiram as vestimentas', 'felicidade', '2024-10-31', 'imagens/halloween2024.png'),
-(82, 'Brinquedos infláveis ', 'Muita diversão', 'felicidade', '2024-10-17', 'imagens/brinquedos.png');
+(82, 'Brinquedos infláveis ', 'Muita diversão', 'felicidade', '2024-10-17', 'imagens/brinquedos.png'),
+(83, 'Ainda precisava de máscara', 'Mais fotos em aula', 'outofcontext', '2021-11-19', 'imagens/guriasaula.png'),
+(84, '1° Visita Técnica', 'Visita na Rech ', 'felicidade', '0000-00-00', 'imagens/visitarech.png'),
+(85, 'Ainda precisava de máscara', 'Mais fotos em aula', 'outofcontext', '2021-11-19', 'imagens/guriasaula.png'),
+(86, '1° Visita Técnica', 'Visita na Rech ', 'felicidade', '2022-10-02', 'imagens/visitarech.png'),
+(87, 'Fotos tiradas em aula', 'Mathias e seu óculos', 'outofcontext', '2022-09-20', 'imagens/mathias.png'),
+(88, 'Filmes e filmes', 'Usando o auditório', 'nostalgia', '2023-05-24', 'imagens/guris.png'),
+(89, 'Vencemos!!', 'Ganhadores das interseries', 'felicidade', '2022-10-22', 'imagens/campeoes.png'),
+(90, 'Não faço ideia', 'O que aconteceu?', 'outofcontext', '2022-07-22', 'imagens/festajunina.png');
 
 -- --------------------------------------------------------
 
@@ -226,7 +274,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`id`, `nome`, `senha`) VALUES
 (1, 'us4us', 'senha1234'),
 (2, 'teste', 'teste1234'),
-(3, 'julia', 'julia123');
+(3, 'julia', 'julia123'),
+(4, 'teste2', 'teste123');
 
 --
 -- Índices para tabelas despejadas
@@ -260,19 +309,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de tabela `album`
 --
 ALTER TABLE `album`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT de tabela `memoria`
 --
 ALTER TABLE `memoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
 
 --
 -- AUTO_INCREMENT de tabela `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restrições para tabelas despejadas

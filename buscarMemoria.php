@@ -1,57 +1,60 @@
 <?php
-    session_start();
+session_start();
 
-    if (!isset($_SESSION['ID'])) {
-        header("location: login.html");
-    }
+// Verifica se o usuário está logado
+if (!isset($_SESSION['ID'])) {
+    header("location: index.php");
+    exit;
+}
 
-    $conexao = new mysqli("localhost", "root", "", "now");
+// Conexão com o banco de dados
+$conexao = new mysqli("localhost", "root", "", "now");
 
-    if ($conexao->connect_error) {
-        die("Falha na conexão: " . $conexao->connect_error);
-    }
+// Verifica a conexão
+if ($conexao->connect_error) {
+    die("Falha na conexão: " . $conexao->connect_error);
+}
 
-    if (isset($_GET['ballId'])) {
-        $sentimento_id = $_GET['ballId'];
-    } else {
-        die("ID do sentimento não informado.");
-    }
+// Obtém o ballId (sentimento_id) do GET ou POST
+if (isset($_GET['ballId'])) {
+    $sentimento_id = $_GET['ballId'];
+} elseif (isset($_POST['ballId'])) {
+    $sentimento_id = $_POST['ballId'];
+} else {
+    die(json_encode(["success" => false, "message" => "ID do sentimento não informado."]));
+}
 
-    $usuario_id = $_SESSION['ID'];
+// ID do usuário logado
+$usuario_id = (int)$_SESSION['ID'];
 
-    $query = "SELECT m.id, m.titulo, m.descricao, m.data, m.foto, m.sentimento 
-          FROM memoria m 
-          LEFT JOIN album a ON m.id = a.id_memoria AND a.id_user = '{$usuario_id}'
-          WHERE a.id_memoria IS NULL AND m.sentimento = '{$sentimento_id}' 
-          ORDER BY RAND() LIMIT 1;";
+// Sanitiza o sentimento_id
+$sentimento_id = $conexao->real_escape_string($sentimento_id); // Contra SQL Injection
 
+// Monta a consulta SQL
+$query = "SELECT m.id, m.titulo, m.descricao, m.data, m.foto, m.sentimento 
+FROM memoria m 
+LEFT JOIN album a ON m.id = a.id_memoria AND a.id_user = '{$usuario_id}'
+WHERE a.id_memoria IS NULL AND m.sentimento = '{$sentimento_id}' 
+ORDER BY RAND() LIMIT 1;";
 
+// Executa a consulta
+$result = $conexao->query($query);
 
-    $result = $conexao->query($query);
-    $stmt->execute();
-    $result = $stmt->get_result();
+// Caso exista uma memória disponível
+if ($result && $result->num_rows > 0) {
+    $memoria = $result->fetch_assoc();
 
-    if ($result->num_rows > 0) {
-        $memoria = $result->fetch_assoc();
-        echo json_encode([
-            'titulo' => $memoria['titulo'],
-            'descricao' => $memoria['descricao'],
-            'data' => $memoria['data'],
-            'foto' => $memoria['foto'],
-            'ballId' => $memoria['sentimento']
-        ]);
+    // Insere um registro na tabela 'album'
+    $memoria_id = (int)$memoria['id'];
+    $insert_query = "INSERT INTO album (id_user, id_memoria, favorita) VALUES ($usuario_id, $memoria_id, 0)";
+    $conexao->query($insert_query);
 
+    echo json_encode(["success" => true, "memoria" => $memoria]);
+} else {
+    // Caso não haja memórias disponíveis
+    echo json_encode(["success" => false, "message" => "Nenhuma memória disponível."]);
+}
 
-        $memoria_id = $memoria['id'];
-        $registro = $conexao->prepare("INSERT INTO album (id_user, id_memoria) VALUES (?, ?)");
-        $registro->bind_param("ii", $usuario_id, $memoria_id);
-        $registro->execute();
-    
-
-    } else {
-        echo "Nenhuma memória disponível com esse sentimento que você ainda não tenha visto.";
-    }
-
-    $stmt->close();
-    $conexao->close();
+// Fecha a conexão
+$conexao->close();
 ?>

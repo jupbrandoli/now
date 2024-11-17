@@ -15,38 +15,31 @@ if ($conexao->connect_error) {
     die("Falha na conexão: " . $conexao->connect_error);
 }
 
-// Obtém o ballId (sentimento_id) do GET ou POST
-if (isset($_GET['ballId'])) {
-    $sentimento_id = $_GET['ballId'];
-} elseif (isset($_POST['ballId'])) {
-    $sentimento_id = $_POST['ballId'];
+// Obtém o id da memória do GET ou POST
+if (isset($_GET['id'])) {
+    $id_memoria = $_GET['id'];
+} elseif (isset($_POST['id'])) {
+    $id_memoria = $_POST['id'];
 } else {
-    die("ID do sentimento não informado.");
+    die("ID da memória não informado.");
 }
 
 // ID do usuário logado
 $usuario_id = (int)$_SESSION['ID'];
 
-// Sanitiza o sentimento_id
-$sentimento_id = $conexao->real_escape_string($sentimento_id); // Contra SQL Injection
+// Sanitiza o id_memoria
+$id_memoria = $conexao->real_escape_string($id_memoria); // Contra SQL Injection
 
-// Monta a consulta SQL
+// Monta a consulta SQL (não alterada)
 $query = "SELECT m.id, m.titulo, m.descricao, m.data, m.foto, m.sentimento 
 FROM memoria m 
-LEFT JOIN album a ON m.id = a.id_memoria AND a.id_user = '{$usuario_id}'
-WHERE a.id_memoria IS NULL AND m.sentimento = '{$sentimento_id}' 
-ORDER BY RAND() LIMIT 1;";
+INNER JOIN album a ON m.id = a.id_memoria AND a.id_user = '{$usuario_id}' AND a.id_memoria = '{$id_memoria}'";
 
 // Executa a consulta
 $result = $conexao->query($query);
 
 if ($result && $result->num_rows > 0) {
     $memoria = $result->fetch_assoc();
-
-    // Insere um registro na tabela 'album'
-    $memoria_id = (int)$memoria['id'];
-    $insert_query = "INSERT INTO album (id_user, id_memoria, favorita) VALUES ($usuario_id, $memoria_id, 0)";
-    $conexao->query($insert_query);
 
     // Exibe os dados formatados
     ?>
@@ -55,7 +48,7 @@ if ($result && $result->num_rows > 0) {
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
         <meta charset="UTF-8">
-        <title>Visualizar Memória</title>
+        <title>Visualizar Memória Favorita</title>
         <style>
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body, html { height: 100%; width: 100%; overflow: hidden; font-family: Arial, sans-serif; }
@@ -190,7 +183,7 @@ if ($result && $result->num_rows > 0) {
     </head>
     <body>
         <div class="container">
-            <a href="index.php" class="back-button"></a>
+            <a href="albumMemoria.php" class="back-button"></a>
 
             <!-- Texto no topo -->
             <div class="text">
@@ -204,7 +197,7 @@ if ($result && $result->num_rows > 0) {
                 <?php endif; ?>
 
                 <button id="favoriteButton" class="heart-button" alt="Favoritar" onclick="toggleFavorite(<?php echo $memoria['id']; ?>)">
-                <i class="bi bi-heart"></i> <!-- Ícone de coração vazio -->
+                    <i class="bi bi-heart"></i> <!-- Ícone de coração vazio -->
                 </button>
 
             </div>
@@ -232,12 +225,12 @@ if ($result && $result->num_rows > 0) {
                 { color: 'red', id: 'raiva' }
             ];
 
-            // Variável sentimentoId passada do PHP
-            const sentimentoId = '<?php echo htmlspecialchars($sentimento_id, ENT_QUOTES, 'UTF-8'); ?>';
+            // Variável sentimento passada do PHP
+            const sentimento = '<?php echo htmlspecialchars($memoria['sentimento'], ENT_QUOTES, 'UTF-8'); ?>';
 
-            // Encontra a cor correspondente ao sentimentoId
-            const colorEntry = colorData.find(entry => entry.id === sentimentoId);
-            const color = colorEntry ? colorEntry.color : 'gray'; // Define gray' como padrão se não encontrar
+            // Encontra a cor correspondente ao sentimento
+            const colorEntry = colorData.find(entry => entry.id === sentimento.toLowerCase());
+            const color = colorEntry ? colorEntry.color : 'gray'; // Define 'gray' como padrão se não encontrar
 
             // Altera a cor dos elementos após o carregamento da página
             window.addEventListener('DOMContentLoaded', (event) => {
@@ -261,8 +254,30 @@ if ($result && $result->num_rows > 0) {
                 }
             });
 
-            // Faz uma requisição para verificar o estado atual
-            function toggleFavorite(idMemoria) {
+        document.addEventListener('DOMContentLoaded', () => {
+            const button = document.getElementById('favoriteButton');
+            const icon = button.querySelector('i');
+            const idMemoria = button.getAttribute('onclick').match(/\d+/)[0]; // Extrai o ID do botão
+
+            // Verifica o estado atual do favorito ao carregar a página
+            fetch(`verificarFavorita.php?id_memoria=${idMemoria}`, { method: "GET" })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.favorita === 1) {
+                        // Se for favorita, atualiza o botão e o ícone
+                        button.classList.add('active');
+                        icon.classList.remove('bi-heart'); // Ícone vazio
+                        icon.classList.add('bi-heart-fill'); // Ícone preenchido
+                    } else {
+                        // Se não for favorita, mantém o estado padrão
+                        button.classList.remove('active');
+                        icon.classList.remove('bi-heart-fill'); // Ícone preenchido
+                        icon.classList.add('bi-heart'); // Ícone vazio
+                    }
+                })
+                .catch(error => console.error("Erro ao verificar favorito:", error));
+        });
+        function toggleFavorite(idMemoria) {
             const button = document.getElementById('favoriteButton');
             const icon = button.querySelector('i');
 
@@ -300,7 +315,6 @@ if ($result && $result->num_rows > 0) {
                 })
                 .catch(error => console.error("Erro:", error));
         }
-
 
         </script>
     </body>

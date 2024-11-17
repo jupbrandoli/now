@@ -1,55 +1,59 @@
 <?php
+// Verifica se a sessão já foi iniciada e inicia se necessário
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
+}
 
-    if (!isset($_SESSION['ID'])) {
-        header("location: index.php");
-        exit();
+// Verifica se o usuário está logado
+if (!isset($_SESSION['ID'])) {
+    header("Location: index.php");
+    exit;
+}
+
+// Inicia a conexão com o banco de dados
+$conexao = new mysqli("localhost", "root", "", "now");
+if ($conexao->connect_error) {
+    die("Falha na conexão: " . $conexao->connect_error);
+}
+
+$usuario_id = $_SESSION['ID'];
+
+// Parâmetros para paginação
+$memorias_por_pagina = 12;
+$pagina_atual = isset($_GET['pagina']) ? intval($_GET['pagina']) : 1;
+$offset = ($pagina_atual - 1) * $memorias_por_pagina;
+
+// Consulta para buscar memórias vistas e não vistas
+$query = "
+    SELECT m.id, m.titulo, m.descricao, m.data, m.foto, m.sentimento,
+           CASE WHEN a.id_user IS NOT NULL THEN 1 ELSE 0 END AS visualizada
+    FROM memoria m
+    LEFT JOIN album a ON m.id = a.id_memoria AND a.id_user = ?
+    ORDER BY m.data DESC
+    LIMIT ? OFFSET ?
+";
+
+$stmt = $conexao->prepare($query);
+$stmt->bind_param("iii", $usuario_id, $memorias_por_pagina, $offset);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$memorias = [];
+if ($result->num_rows > 0) {
+    while ($memoria = $result->fetch_assoc()) {
+        $memorias[] = $memoria;
     }
+}
 
-    $conexao = new mysqli("localhost", "root", "", "now");
+// Conta o número total de memórias para a paginação
+$total_query = "
+    SELECT COUNT(*) as total
+    FROM memoria
+";
+$total_result = $conexao->query($total_query);
+$total_memorias = $total_result->fetch_assoc()['total'];
+$total_paginas = ceil($total_memorias / $memorias_por_pagina);
 
-    if ($conexao->connect_error) {
-        die("Falha na conexão: " . $conexao->connect_error);
-    }
-
-    $usuario_id = $_SESSION['ID'];
-
-    // Consulta para selecionar todas as memórias visualizadas pelo usuário
-    $query = "
-        SELECT m.id, m.titulo, m.descricao, m.data, m.foto 
-        FROM memoria m
-        INNER JOIN album a ON m.id = a.memoria_id 
-        WHERE a.usuario_id = ?
-        ORDER BY m.data DESC
-    ";
-
-    $stmt = $conexao->prepare($query);
-    $stmt->bind_param("i", $usuario_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        while ($memoria = $result->fetch_assoc()) {
-            $titulo = $memoria['titulo'];
-            $descricao = $memoria['descricao'];
-            $data = $memoria['data'];
-            $foto = $memoria['foto'];
-
-            echo "<div>";
-            echo "<h2>$titulo</h2>";
-            echo "<p><strong>Descrição:</strong> $descricao</p>";
-            echo "<p><strong>Data:</strong> $data</p>";
-
-            if (!empty($foto)) {
-                echo "<img src='$foto' alt='Foto da Memória' />";
-            }
-            
-            echo "</div><hr>";
-        }
-    } else {
-        echo "Nenhuma memória visualizada disponível para esse usuário.";
-    }
-
-    $stmt->close();
-    $conexao->close();
+$stmt->close();
+$conexao->close();
 ?>
