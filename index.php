@@ -42,55 +42,81 @@ if(!isset($_SESSION['ID'])){
         
         }
         /* Estilos do menu */
-        .menu {
-            position: absolute;
-            top: 10px; /* Posição do menu */
-            left: 10px; /* Posição do menu */
-            width: 50px; /* Diâmetro do círculo */
-            height: 50px; /* Diâmetro do círculo */
-            background-color: #444;
-            border-radius: 50%; /* Torna o menu circular */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            z-index: 3;
-        }
-        .menu:hover {
-            background-color: #555;
-        }
-        .menu-item {
-    display: none;
-    position: absolute;
-    width: 60px; /* Largura reduzida */
-    height: 60px; /* Altura aumentada */
-    background-color: #333;
-    color: white;
-    text-align: center;
-    border-radius: 50%; /* Torna as bordas das opções circulares */
-    transition: background-color 0.3s;
-    display: flex; /* Permite o uso de flexbox */
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
-}
+    .menu {
+        position: absolute;
+        top: 10px; /* Mantém o menu próximo ao topo */
+        left: 10px; /* Mantém o menu próximo ao canto esquerdo */
+        width: 50px;
+        height: 50px;
+        background-color: #444;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        z-index: 3;
+    }
 
-.menu-item a {
-    color: white; /* Cor do texto do link */
-    text-decoration: none; /* Remove o sublinhado */
-    width: 100%; /* Ocupar toda a largura do item */
-    height: 100%; /* Ocupar toda a altura do item */
-    display: flex; /* Permite o uso de flexbox no link */
-    justify-content: center; /* Centraliza horizontalmente o conteúdo do link */
-    align-items: center; /* Centraliza verticalmente o conteúdo do link */
-}
-        /* Estilo das opções do menu com posição circular */
-        .menu-item:nth-child(1) { top: -60px; left: 0; }  /* Acima */
-        .menu-item:nth-child(2) { top: 0; left: 60px; }   /* Direita */
-        .menu-item:nth-child(3) { top: 60px; left: 0; }   /* Abaixo */
-        .menu-item:nth-child(4) { top: 0; left: -60px; }   /* Esquerda */
-    </style>
+    .menu:hover {
+        background-color: #555;
+    }
+
+    /* Estilo das opções do menu */
+    .menu-item {
+        display: none;
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background-color: #333;
+        color: white;
+        text-align: center;
+        border-radius: 50%;
+        transition: background-color 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .menu-item a {
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Posições ajustadas das opções */
+    .menu-item:nth-child(1) { top: calc(-60px - 10px); left: 0; } /* Acima */
+    .menu-item:nth-child(2) { top: 0; left: calc(60px + 10px); }  /* Direita */
+    .menu-item:nth-child(3) { top: calc(60px + 10px); left: 0; }  /* Abaixo */
+
+    /* Botão de Logout */
+    .logout-button {
+        position: absolute;
+        bottom: 10px; /* Localizado na parte inferior */
+        left: 10px;   /* Localizado à esquerda */
+        background-color: #d9534f; /* Vermelho suave */
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        z-index: 4;
+    }
+
+    .logout-button a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .logout-button:hover {
+        background-color: #c9302c; /* Cor mais escura ao passar o mouse */
+    }
+</style>
     <link rel="stylesheet" href="https://unpkg.com/phosphor-icons@latest/src/styles.css">
 </head>
 <body>
@@ -110,8 +136,13 @@ if(!isset($_SESSION['ID'])){
         <div class="menu-item">
             <a href="albumFavoritas.php">✩</a>
         </div>
+        <div class="menu-item">
+            <a href="sobre.php">sob</a>
+        </div>
     </div>
-
+    <div class="logout-button">
+        <a href="logout.php">Logout</a>
+    </div>
 
     <script>
         const canvas = document.getElementById('canvas');
